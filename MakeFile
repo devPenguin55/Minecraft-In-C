@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Iinclude
-LIBS = -lglfw3 -lopengl32 -lgdi32 -lfreeglut
+LIBS = -lfreeglut -lopengl32 -lglu32 -lgdi32
 TARGET = main.exe
 
 all: $(TARGET)

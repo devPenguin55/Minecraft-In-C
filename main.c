@@ -4,6 +4,9 @@
 #include <GL/glut.h>
 
 GLfloat T = 0;
+GLfloat CameraX = 0;
+GLfloat CameraY = 0;
+GLfloat CameraZ = 3;
 
 void spinObject() {
     T =  T + 0.025;
@@ -16,6 +19,11 @@ void initGraphics() {
     glClearColor(0,0,0,1);
     glColor3f(1,0,0);
     glEnable(GL_DEPTH_TEST);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glFrustum(-1, 1, -1, 1, 2, 10); // z always > 0
+    glMatrixMode(GL_MODELVIEW);
 }
 
 void face(GLfloat A[], GLfloat B[], GLfloat C[], GLfloat D[]) {
@@ -71,9 +79,13 @@ void drawGraphics() {
 
     // clear color buffer to clear background, uses preset color setup in initGraphics
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+
+    // camera
+    glLoadIdentity();
+    gluLookAt(CameraX,CameraY,CameraZ,0,0,0,0,1,0); // center is the coordinate center origin (all 0)
+
     glPointSize(5);
  
-    glLoadIdentity();
     glRotatef(T,1,1,0);
     cube(Vertices);
 
