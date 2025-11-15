@@ -1,5 +1,6 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
+#include <stdio.h>
 #include <math.h>
 #include "input.h"
 GLfloat CameraX = 0.5;
@@ -8,10 +9,10 @@ GLfloat CameraZ = 1;
 GLfloat PlayerDirX = 0;
 GLfloat PlayerDirY = -3;
 GLfloat PlayerDirZ = -1;
-float PLAYER_SPEED = 0.001;
+float PLAYER_SPEED = 0.1;
 
-float yaw   = 0.0f; // horizontal rotation
-float pitch = 0.0f; // vertical   rotation
+float yaw   = 132.0f; // horizontal rotation
+float pitch = -56.0f; // vertical   rotation
 
 int lastMouseX = 0;
 int lastMouseY = 0;
@@ -54,7 +55,7 @@ void handleMovingMouse(int x, int y) {
     pitch += -dy * 0.2f;
     if (pitch > 89.0f)  pitch = 89.0f;
     if (pitch < -89.0f) pitch = -89.0f;
-    
+    // printf("%f %f\n", yaw, pitch);
     PlayerDirX = cosf(pitch * M_PI/180) * sinf(yaw * M_PI/180);
     PlayerDirY = sinf(pitch * M_PI/180);
     PlayerDirZ = -cosf(pitch * M_PI/180) * cosf(yaw * M_PI/180);

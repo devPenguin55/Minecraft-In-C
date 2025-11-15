@@ -33,7 +33,7 @@ void initWorld(PlayerChunks *world)
 {
     int x = 0;
     int z = 0;
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < 1; i++)
     {
         x = i % (4);
         z = (int)(i / (4));

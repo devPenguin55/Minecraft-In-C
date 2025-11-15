@@ -13,11 +13,28 @@ void initGraphics()
     glColor3f(1, 0, 0);
     glEnable(GL_DEPTH_TEST);
 
+    // glMatrixMode(GL_PROJECTION);
+    // glLoadIdentity();
+    // glFrustum(-1, 1, -1, 1, 1, 20); // z always > 0
+    // glMatrixMode(GL_MODELVIEW);
+}
+
+void reshape(int width, int height)
+{
+    if (height == 0) height = 1;
+
+    glViewport(0, 0, width, height);
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum(-1, 1, -1, 1, 1, 20); // z always > 0
+
+    float aspect = (float)width / (float)height;
+
+    gluPerspective(70.0f, aspect, 0.1f, 500.0f);
+
     glMatrixMode(GL_MODELVIEW);
 }
+
 
 void spinObject()
 {
@@ -33,7 +50,8 @@ void face(GLfloat A[], GLfloat B[], GLfloat C[], GLfloat D[], GLfloat transforma
     glTranslatef(transformation[0], transformation[1], transformation[2]); // move it up
     glScalef(BlockWidthX, BlockLengthZ, BlockHeightY);
 
-    glBegin(GL_POLYGON);
+    // glBegin(GL_POLYGON);
+    glBegin(GL_LINE_LOOP);
     glVertex3fv(A);
     glVertex3fv(B);
     glVertex3fv(C);
@@ -104,7 +122,7 @@ void drawGraphics()
 
     glPointSize(5);
 
-    for (int chunkIndex = 0; chunkIndex < 16; chunkIndex++)
+    for (int chunkIndex = 0; chunkIndex < 1; chunkIndex++)
     {
         Chunk *curChunk = &(world.chunks[chunkIndex]);
         float minX = 727379969;

@@ -20,6 +20,7 @@ int main(int argc, char *argv[]) {
 
     initGraphics();
 
+    glutReshapeFunc(reshape);
     glutDisplayFunc(drawGraphics);
     glutKeyboardFunc(handleKeyDown);
     glutKeyboardUpFunc(handleKeyUp);
