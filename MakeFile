@@ -2,11 +2,12 @@ CC = gcc
 CFLAGS = -Iinclude
 LIBS = -lfreeglut -lopengl32 -lglu32 -lgdi32
 TARGET = main.exe
+SRC = main.c input.c render.c chunks.c
 
 all: $(TARGET)
 
-$(TARGET): main.c
-	$(CC) main.c -o $(TARGET) $(CFLAGS) $(LIBS)
+$(TARGET): $(SRC)
+	$(CC) $(SRC) -o $(TARGET) $(CFLAGS) $(LIBS)
 
 clean:
 	del $(TARGET)
