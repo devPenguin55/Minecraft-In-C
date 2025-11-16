@@ -10,11 +10,21 @@ extern GLfloat CameraZ;
 extern GLfloat PlayerDirX;
 extern GLfloat PlayerDirY;
 extern GLfloat PlayerDirZ;
+extern GLuint atlasTexture;
+
+typedef struct UV 
+{
+    float u;
+    float v;
+    float u1;
+    float v1;
+} UV;
 
 void initGraphics();
 void reshape(int width, int height);
 void spinObject();
-void face(GLfloat A[], GLfloat B[], GLfloat C[], GLfloat D[], GLfloat transformation[3]);
+void uvCoordinatesFromTextureIndex(int textureIndex, UV *uv, int amtHorizTextures, int amtVertTextures);
+void face(GLfloat A[], GLfloat B[], GLfloat C[], GLfloat D[], GLfloat transformation[3], int textureIndex);
 void cube(GLfloat Vertices[8][3], GLfloat transformation[3]);
 void drawGraphics();
 

@@ -3,6 +3,9 @@
 #include "chunks.h"
 
 PlayerChunks world;
+// int ChunkWidthX = 1;
+// int ChunkLengthZ = 1; 
+// int ChunkHeightY = 10;
 int ChunkWidthX = 16;
 int ChunkLengthZ = 16; 
 int ChunkHeightY = 10;
