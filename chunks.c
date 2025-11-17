@@ -51,16 +51,19 @@ void generateChunkMesh(Chunk *chunk)
     int   lefts[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0};
     int  rights[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0};
     int  fronts[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0};
+    int   backs[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0};
 
     for (int y = 0; y<ChunkHeightY; y++) {
         for (int x = 0; x<ChunkWidthX; x++) {
             for (int z = 0; z<ChunkLengthZ; z++) {
-                int blockIndex = x + z*ChunkWidthX + y*(ChunkWidthX*ChunkLengthZ);
-                int topBlockIndex = blockIndex - ChunkWidthX*ChunkLengthZ;
+                int blockIndex       = x + z*ChunkWidthX + y*(ChunkWidthX*ChunkLengthZ);
+                int topBlockIndex    = blockIndex - ChunkWidthX*ChunkLengthZ;
                 int bottomBlockIndex = blockIndex + ChunkWidthX*ChunkLengthZ;
-                int leftBlockIndex = blockIndex - 1;
-                int rightBlockIndex = blockIndex + 1;
-                int frontBlockIndex = blockIndex - ChunkWidthX;
+                int leftBlockIndex   = blockIndex - 1;
+                int rightBlockIndex  = blockIndex + 1;
+                int frontBlockIndex  = blockIndex - ChunkWidthX;
+                int backBlockIndex   = blockIndex + ChunkWidthX;
+
                 if (
                     (topBlockIndex >= 0 && (!chunk->blocks[blockIndex].isAir && chunk->blocks[topBlockIndex].isAir)) ||                    
                     (!chunk->blocks[blockIndex].isAir && topBlockIndex < 0)    
@@ -98,7 +101,7 @@ void generateChunkMesh(Chunk *chunk)
                 } else {
                     rights[x][z][y] = 0;
                 }
-
+                
                 if ((z > 0 && (!chunk->blocks[blockIndex].isAir && chunk->blocks[frontBlockIndex].isAir)) ||
                     (!chunk->blocks[blockIndex].isAir && z == 0)
                 ) {
@@ -107,13 +110,22 @@ void generateChunkMesh(Chunk *chunk)
                 } else {
                     fronts[x][z][y] = 0;
                 }
-            }        
+           
+            if ((z < (ChunkLengthZ-1) && (!chunk->blocks[blockIndex].isAir && chunk->blocks[backBlockIndex].isAir)) ||
+                (!chunk->blocks[blockIndex].isAir && z == (ChunkLengthZ-1))
+            ) {
+                // existing block
+                backs[x][z][y] = 1;
+            } else {
+                backs[x][z][y] = 0;
+            }   
         }
-        for (int i = 0; i < ChunkWidthX; i++)
-        {
+    }
+    for (int i = 0; i < ChunkWidthX; i++)
+    {
             for (int j = 0; j < ChunkLengthZ; j++)
             {
-                printf("%d ", fronts[i][j][y]);
+                printf("%d ", backs[i][j][y]);
             }
             printf("\n");
         }
