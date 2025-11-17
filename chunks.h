@@ -22,9 +22,9 @@ typedef struct PlayerChunks
 } PlayerChunks;
 
 extern PlayerChunks world;
-extern int ChunkWidthX;
-extern int ChunkLengthZ;
-extern int ChunkHeightY;
+#define ChunkWidthX 16
+#define ChunkLengthZ 16
+#define ChunkHeightY 5
 extern float BlockWidthX;
 extern float BlockLengthZ;
 extern float BlockHeightY;

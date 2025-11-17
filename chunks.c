@@ -7,9 +7,7 @@ PlayerChunks world;
 // int ChunkWidthX = 1;
 // int ChunkLengthZ = 1; 
 // int ChunkHeightY = 10;
-#define ChunkWidthX 16
-#define ChunkLengthZ 16
-#define ChunkHeightY 5
+
 
 float BlockWidthX = 0.15;
 float BlockHeightY = 0.15;
@@ -52,6 +50,8 @@ void generateChunkMesh(Chunk *chunk)
     int bottoms[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0};
     int   lefts[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0};
     int  rights[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0};
+    int  fronts[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0};
+
     for (int y = 0; y<ChunkHeightY; y++) {
         for (int x = 0; x<ChunkWidthX; x++) {
             for (int z = 0; z<ChunkLengthZ; z++) {
@@ -60,6 +60,7 @@ void generateChunkMesh(Chunk *chunk)
                 int bottomBlockIndex = blockIndex + ChunkWidthX*ChunkLengthZ;
                 int leftBlockIndex = blockIndex - 1;
                 int rightBlockIndex = blockIndex + 1;
+                int frontBlockIndex = blockIndex - ChunkWidthX;
                 if (
                     (topBlockIndex >= 0 && (!chunk->blocks[blockIndex].isAir && chunk->blocks[topBlockIndex].isAir)) ||                    
                     (!chunk->blocks[blockIndex].isAir && topBlockIndex < 0)    
@@ -97,13 +98,22 @@ void generateChunkMesh(Chunk *chunk)
                 } else {
                     rights[x][z][y] = 0;
                 }
+
+                if ((z > 0 && (!chunk->blocks[blockIndex].isAir && chunk->blocks[frontBlockIndex].isAir)) ||
+                    (!chunk->blocks[blockIndex].isAir && z == 0)
+                ) {
+                    // existing block
+                    fronts[x][z][y] = 1;
+                } else {
+                    fronts[x][z][y] = 0;
+                }
             }        
         }
         for (int i = 0; i < ChunkWidthX; i++)
         {
             for (int j = 0; j < ChunkLengthZ; j++)
             {
-                printf("%d ", rights[i][j]);
+                printf("%d ", fronts[i][j][y]);
             }
             printf("\n");
         }
