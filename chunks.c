@@ -122,7 +122,16 @@ void generateChunkMesh(Chunk *chunk)
                 }   
             }
         }
-    
+        
+        for (int i = 0; i < 16; i++)
+        {
+            for (int j = 0; j < 16; j++)
+            {
+                printf("%d ", tops[i][j][y]);
+            }
+            printf("\n");
+        }
+        printf(" ---  new y layer of %d\n", y); 
     }
 
     // greedy algorithm
@@ -132,7 +141,7 @@ void generateChunkMesh(Chunk *chunk)
     chunkMeshQuads.quads = malloc(sizeof(MeshQuad)*chunkMeshQuads.capacity);    
 
     // handle top mesh
-    int visitedTops[ChunkHeightY][ChunkLengthZ][ChunkWidthX] = {0};
+    int visitedTops[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0};
     int width;
     int height;
     int done;
@@ -186,7 +195,7 @@ void generateChunkMesh(Chunk *chunk)
         }    
     }
 
-    int visitedBottoms[ChunkHeightY][ChunkLengthZ][ChunkWidthX] = {0};
+    int visitedBottoms[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0};
     for (int y = 0; y < ChunkHeightY; y++) {
         for (int x = 0; x < ChunkWidthX; x++) {
             for (int z = 0; z < ChunkLengthZ; z++) {
@@ -229,13 +238,15 @@ void generateChunkMesh(Chunk *chunk)
                 curQuad->z = z;
                 curQuad->width = width;
                 curQuad->height = height;
-                curQuad->faceType = FACE_TOP;
+                curQuad->faceType = FACE_BOTTOM;
 
                 chunkMeshQuads.amtQuads++;
                 printf("[CREATED QUAD] x %d, y %d, z %d, width %d, height %d, faceType %d\n", x, y, z, width, height, FACE_TOP);
             }        
         }    
     }
+
+    
 
     free(chunkMeshQuads.quads);
 }
