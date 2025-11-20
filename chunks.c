@@ -46,12 +46,12 @@ void initWorld(PlayerChunks *world)
 
 void generateChunkMesh(Chunk *chunk)
 {
-    int tops[ChunkWidthX][ChunkLengthZ][ChunkHeightY]    = {0}; // X-Z plane, y fixed
-    int bottoms[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0}; // X-Z plane, y fixed
-    int lefts[ChunkHeightY][ChunkLengthZ][ChunkWidthX]   = {0}; // Y-Z plane, x fixed
-    int rights[ChunkHeightY][ChunkLengthZ][ChunkWidthX]  = {0}; // Y-Z plane, x fixed
-    int fronts[ChunkWidthX][ChunkHeightY][ChunkLengthZ]  = {0}; // X-Y plane, z fixed
-    int backs[ChunkWidthX][ChunkHeightY][ChunkLengthZ]   = {0}; // X-Y plane, z fixed
+    int    tops[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0}; // * X-Z plane, y fixed
+    int bottoms[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0}; // * X-Z plane, y fixed
+    int  lefts[ChunkHeightY][ChunkLengthZ][ChunkWidthX]  = {0}; // ? Y-Z plane, x fixed
+    int rights[ChunkHeightY][ChunkLengthZ][ChunkWidthX]  = {0}; // ? Y-Z plane, x fixed
+    int  fronts[ChunkWidthX][ChunkHeightY][ChunkLengthZ] = {0}; // * X-Y plane, z fixed
+    int   backs[ChunkWidthX][ChunkHeightY][ChunkLengthZ] = {0}; // * X-Y plane, z fixed
 
     // mask generation step (for top, bottom, left, right, front, back)
     for (int y = 0; y<ChunkHeightY; y++) {
@@ -190,7 +190,7 @@ void generateChunkMesh(Chunk *chunk)
                 curQuad->faceType = FACE_TOP;
 
                 chunkMeshQuads.amtQuads++;
-                printf("[CREATED QUAD] x %d, y %d, z %d, width %d, height %d, faceType %d\n", x, y, z, width, height, FACE_TOP);
+                printf("[CREATED QUAD] x %d, y %d, z %d, width %d, height %d, faceType %d\n", x, y, z, width, height, curQuad->faceType);
             }        
         }    
     }
@@ -241,12 +241,214 @@ void generateChunkMesh(Chunk *chunk)
                 curQuad->faceType = FACE_BOTTOM;
 
                 chunkMeshQuads.amtQuads++;
-                printf("[CREATED QUAD] x %d, y %d, z %d, width %d, height %d, faceType %d\n", x, y, z, width, height, FACE_TOP);
+                printf("[CREATED QUAD] x %d, y %d, z %d, width %d, height %d, faceType %d\n", x, y, z, width, height, curQuad->faceType);
             }        
         }    
     }
 
-    
+    int visitedLeft[ChunkHeightY][ChunkLengthZ][ChunkWidthX] = {0};
+    for (int y = 0; y < ChunkHeightY; y++) {
+        for (int x = 0; x < ChunkWidthX; x++) {
+            for (int z = 0; z < ChunkLengthZ; z++) {
+                if (lefts[y][z][x] == 0 || visitedLeft[y][z][x]) { continue; }
+                
+                width = 1;
+                while (((y+width) < ChunkHeightY && lefts[y+width][z][x] == 1) && !visitedLeft[y+width][z][x]) {
+                    width++;
+                }
+
+                height = 1;
+                done   = 0;
+                while ((z+height) < ChunkLengthZ && !done) {
+                    for (int dy = 0; dy < width; dy++) {
+                        if (lefts[y+dy][z+height][x] == 0 || visitedLeft[y+dy][z+height][x]) {
+                            done = 1;
+                            break;
+                        }
+                    }
+                    
+                    if (!done) {
+                        height++;
+                    }                    
+                }
+
+                for (int dz = 0; dz<ChunkLengthZ; dz++) {
+                    for (int dy = 0; dy<ChunkHeightY; dy++) {
+                        visitedLeft[y+dy][z+dz][x] = 1;
+                    }
+                }
+
+                if (chunkMeshQuads.amtQuads >= chunkMeshQuads.capacity) {
+                    chunkMeshQuads.capacity *= 2;
+                    chunkMeshQuads.quads = realloc(chunkMeshQuads.quads, sizeof(MeshQuad)*chunkMeshQuads.capacity);
+                }
+
+                MeshQuad *curQuad = &(chunkMeshQuads.quads[chunkMeshQuads.amtQuads]);
+                curQuad->x = x;
+                curQuad->y = y;
+                curQuad->z = z;
+                curQuad->width = width;
+                curQuad->height = height;
+                curQuad->faceType = FACE_LEFT;
+
+                chunkMeshQuads.amtQuads++;
+                printf("[CREATED QUAD] x %d, y %d, z %d, width %d, height %d, faceType %d\n", x, y, z, width, height, curQuad->faceType);
+            }        
+        }    
+    }
+
+    int visitedRight[ChunkHeightY][ChunkLengthZ][ChunkWidthX] = {0};
+    for (int y = 0; y < ChunkHeightY; y++) {
+        for (int x = 0; x < ChunkWidthX; x++) {
+            for (int z = 0; z < ChunkLengthZ; z++) {
+                if (rights[y][z][x] == 0 || visitedRight[y][z][x]) { continue; }
+                
+                width = 1;
+                while (((y+width) < ChunkHeightY && rights[y+width][z][x] == 1) && !visitedRight[y+width][z][x]) {
+                    width++;
+                }
+
+                height = 1;
+                done   = 0;
+                while ((z+height) < ChunkLengthZ && !done) {
+                    for (int dy = 0; dy < width; dy++) {
+                        if (rights[y+dy][z+height][x] == 0 || visitedRight[y+dy][z+height][x]) {
+                            done = 1;
+                            break;
+                        }
+                    }
+                    
+                    if (!done) {
+                        height++;
+                    }                    
+                }
+
+                for (int dz = 0; dz<ChunkLengthZ; dz++) {
+                    for (int dy = 0; dy<ChunkHeightY; dy++) {
+                        visitedRight[y+dy][z+dz][x] = 1;
+                    }
+                }
+
+                if (chunkMeshQuads.amtQuads >= chunkMeshQuads.capacity) {
+                    chunkMeshQuads.capacity *= 2;
+                    chunkMeshQuads.quads = realloc(chunkMeshQuads.quads, sizeof(MeshQuad)*chunkMeshQuads.capacity);
+                }
+
+                MeshQuad *curQuad = &(chunkMeshQuads.quads[chunkMeshQuads.amtQuads]);
+                curQuad->x = x;
+                curQuad->y = y;
+                curQuad->z = z;
+                curQuad->width = width;
+                curQuad->height = height;
+                curQuad->faceType = FACE_RIGHT;
+
+                chunkMeshQuads.amtQuads++;
+                printf("[CREATED QUAD] x %d, y %d, z %d, width %d, height %d, faceType %d\n", x, y, z, width, height, curQuad->faceType);
+            }        
+        }    
+    }
+
+    int visitedFronts[ChunkWidthX][ChunkHeightY][ChunkLengthZ] = {0};
+    for (int y = 0; y < ChunkHeightY; y++) {
+        for (int x = 0; x < ChunkWidthX; x++) {
+            for (int z = 0; z < ChunkLengthZ; z++) {
+                if (fronts[x][y][z] == 0 || visitedFronts[x][y][z]) { continue; }
+                
+                width = 1;
+                while (((x+width) < ChunkWidthX && fronts[x+width][y][z] == 1) && !visitedFronts[x+width][y][z]) {
+                    width++;
+                }
+
+                height = 1;
+                done   = 0;
+                while ((y+height) < ChunkHeightY && !done) {
+                    for (int dx = 0; dx < width; dx++) {
+                        if (fronts[x+dx][y+height][z] == 0 || visitedFronts[x+dx][y+height][z]) {
+                            done = 1;
+                            break;
+                        }
+                    }
+                    
+                    if (!done) {
+                        height++;
+                    }                    
+                }
+
+                for (int dy = 0; dy<ChunkHeightY; dy++) {
+                    for (int dx = 0; dx<ChunkWidthX; dx++) {
+                        visitedFronts[x+dx][y+dy][z] = 1;
+                    }
+                }
+
+                if (chunkMeshQuads.amtQuads >= chunkMeshQuads.capacity) {
+                    chunkMeshQuads.capacity *= 2;
+                    chunkMeshQuads.quads = realloc(chunkMeshQuads.quads, sizeof(MeshQuad)*chunkMeshQuads.capacity);
+                }
+
+                MeshQuad *curQuad = &(chunkMeshQuads.quads[chunkMeshQuads.amtQuads]);
+                curQuad->x = x;
+                curQuad->y = y;
+                curQuad->z = z;
+                curQuad->width = width;
+                curQuad->height = height;
+                curQuad->faceType = FACE_FRONT;
+
+                chunkMeshQuads.amtQuads++;
+                printf("[CREATED QUAD] x %d, y %d, z %d, width %d, height %d, faceType %d\n", x, y, z, width, height, curQuad->faceType);
+            }        
+        }    
+    }
+
+    int visitedBacks[ChunkWidthX][ChunkHeightY][ChunkLengthZ] = {0};
+    for (int y = 0; y < ChunkHeightY; y++) {
+        for (int x = 0; x < ChunkWidthX; x++) {
+            for (int z = 0; z < ChunkLengthZ; z++) {
+                if (backs[x][y][z] == 0 || visitedBacks[x][y][z]) { continue; }
+                
+                width = 1;
+                while (((x+width) < ChunkWidthX && backs[x+width][y][z] == 1) && !visitedBacks[x+width][y][z]) {
+                    width++;
+                }
+
+                height = 1;
+                done   = 0;
+                while ((y+height) < ChunkHeightY && !done) {
+                    for (int dx = 0; dx < width; dx++) {
+                        if (backs[x+dx][y+height][z] == 0 || visitedBacks[x+dx][y+height][z]) {
+                            done = 1;
+                            break;
+                        }
+                    }
+                    
+                    if (!done) {
+                        height++;
+                    }                    
+                }
+
+                for (int dy = 0; dy<ChunkHeightY; dy++) {
+                    for (int dx = 0; dx<ChunkWidthX; dx++) {
+                        visitedBacks[x+dx][y+dy][z] = 1;
+                    }
+                }
+
+                if (chunkMeshQuads.amtQuads >= chunkMeshQuads.capacity) {
+                    chunkMeshQuads.capacity *= 2;
+                    chunkMeshQuads.quads = realloc(chunkMeshQuads.quads, sizeof(MeshQuad)*chunkMeshQuads.capacity);
+                }
+
+                MeshQuad *curQuad = &(chunkMeshQuads.quads[chunkMeshQuads.amtQuads]);
+                curQuad->x = x;
+                curQuad->y = y;
+                curQuad->z = z;
+                curQuad->width = width;
+                curQuad->height = height;
+                curQuad->faceType = FACE_BACK;
+
+                chunkMeshQuads.amtQuads++;
+                printf("[CREATED QUAD] x %d, y %d, z %d, width %d, height %d, faceType %d\n", x, y, z, width, height, curQuad->faceType);
+            }        
+        }    
+    }
 
     free(chunkMeshQuads.quads);
 }
