@@ -119,25 +119,34 @@ void face(GLfloat A[], GLfloat B[], GLfloat C[], GLfloat D[], GLfloat transforma
     glPopMatrix();
 }
 
-void cube(GLfloat Vertices[8][3], GLfloat transformation[3])
-{
-    // FRONT (0, 1, 2, 3)
-    face(Vertices[0], Vertices[1], Vertices[2], Vertices[3], transformation, 0);
-
-    // BACK (4, 5, 6, 7)
-    face(Vertices[5], Vertices[4], Vertices[7], Vertices[6], transformation, 0);
-
-    // LEFT (0, 3, 7, 4)
-    face(Vertices[4], Vertices[0], Vertices[3], Vertices[7], transformation, 0);
-
-    // RIGHT (1, 2, 6, 5)
-    face(Vertices[1], Vertices[5], Vertices[6], Vertices[2], transformation, 0);
-
-    // TOP (0, 1, 5, 4)
-    face(Vertices[4], Vertices[5], Vertices[1], Vertices[0], transformation, 6);
-
-    // BOTTOM (3, 2, 6, 7)
-    face(Vertices[3], Vertices[2], Vertices[6], Vertices[7], transformation, 1);
+void cubeFace(GLfloat Vertices[8][3], GLfloat transformation[3], GLfloat size[2], int faceType)
+{   
+    switch (faceType) {
+        case FACE_FRONT:
+            // FRONT (0, 1, 2, 3)
+            face(Vertices[0], Vertices[1], Vertices[2], Vertices[3], transformation, 0);
+            break;
+        case FACE_BACK:
+            // BACK (4, 5, 6, 7)
+            face(Vertices[5], Vertices[4], Vertices[7], Vertices[6], transformation, 0);
+            break;
+        case FACE_LEFT:
+            // LEFT (0, 3, 7, 4)
+            face(Vertices[4], Vertices[0], Vertices[3], Vertices[7], transformation, 0);
+            break;
+        case FACE_RIGHT:
+            // RIGHT (1, 2, 6, 5)
+            face(Vertices[1], Vertices[5], Vertices[6], Vertices[2], transformation, 0);
+            break;
+        case FACE_TOP:
+            // TOP (0, 1, 5, 4)
+            face(Vertices[4], Vertices[5], Vertices[1], Vertices[0], transformation, 6);
+            break;
+        case FACE_BOTTOM:
+            // BOTTOM (3, 2, 6, 7)
+            face(Vertices[3], Vertices[2], Vertices[6], Vertices[7], transformation, 1);
+            break;
+    }
 }
 
 
@@ -175,44 +184,33 @@ void drawGraphics()
 
     glPointSize(5);
 
-    for (int chunkIndex = 0; chunkIndex < 1; chunkIndex++)
+    for (int quadIndex = 0; quadIndex < 1; quadIndex++)
     {
-        Chunk *curChunk = &(world.chunks[chunkIndex]);
-        float minX = 727379969;
-        float maxX = -727379969;
-        float minZ = 727379969;
-        float maxZ = -727379969;
-        for (int blockIndex = 0; blockIndex < ChunkWidthX * ChunkLengthZ * ChunkHeightY; blockIndex++)
-        {
-            Block *curBlock = &(curChunk->blocks[blockIndex]);
+        MeshQuad *curQuad = &(chunkMeshQuads.quads[quadIndex]);
+        
 
-            minX = (curBlock->x < minX) ? curBlock->x : minX;
-            maxX = (curBlock->x > maxX) ? curBlock->x : maxX;
-            minZ = (curBlock->z < minZ) ? curBlock->z : minZ;
-            maxZ = (curBlock->z > maxZ) ? curBlock->z : maxZ;
-
-            if (curBlock->isAir) { continue; }
             
-            GLfloat translation[3] = {curBlock->x, curBlock->y, curBlock->z};
-            cube(Vertices, translation);
-        }
+        GLfloat translation[3] = {curQuad->x, curQuad->y, curQuad->z};
+        GLfloat size[2] = {curQuad->width, curQuad->height};
+        cubeFace(Vertices, translation, size, curQuad->faceType);
 
-        glPushMatrix();
-        glLineWidth(3.0f);
 
-        float halfX = (BlockWidthX) / 2.0f;
-        float halfZ = (BlockLengthZ) / 2.0f;
-        float borderY = 0.3f; // or top layer
-        // printf("x from %f to %f, y from %f to %f\n", minX, maxX, minZ, maxZ);
-        glBegin(GL_LINE_LOOP);
-        glVertex3f(minX - halfX, borderY, minZ - halfZ);
-        glVertex3f(maxX + halfX, borderY, minZ - halfZ);
-        glVertex3f(maxX + halfX, borderY, maxZ + halfZ);
-        glVertex3f(minX - halfX, borderY, maxZ + halfZ);
-        glEnd();
+        // glPushMatrix();
+        // glLineWidth(3.0f);
 
-        glLineWidth(1.0f);
-        glPopMatrix();
+        // float halfX = (BlockWidthX) / 2.0f;
+        // float halfZ = (BlockLengthZ) / 2.0f;
+        // float borderY = 0.3f; // or top layer
+        // // printf("x from %f to %f, y from %f to %f\n", minX, maxX, minZ, maxZ);
+        // glBegin(GL_LINE_LOOP);
+        // glVertex3f(minX - halfX, borderY, minZ - halfZ);
+        // glVertex3f(maxX + halfX, borderY, minZ - halfZ);
+        // glVertex3f(maxX + halfX, borderY, maxZ + halfZ);
+        // glVertex3f(minX - halfX, borderY, maxZ + halfZ);
+        // glEnd();
+
+        // glLineWidth(1.0f);
+        // glPopMatrix();
 
     }
 

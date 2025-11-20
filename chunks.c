@@ -51,7 +51,7 @@ void initChunkMeshingSystem() {
 }
 
 void handleProgramClose() {
-    printf("\n\n\nProgram closing -> freeing chunk quad memory");
+    printf("\n\n\n[MEMORY INFO] Program closing -> freeing chunk quad memory\n\n\n");
     free(chunkMeshQuads.quads);
 }
 
