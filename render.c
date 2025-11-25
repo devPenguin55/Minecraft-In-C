@@ -102,6 +102,9 @@ void face(GLfloat A[], GLfloat B[], GLfloat C[], GLfloat D[], GLfloat transforma
     // printf("Translation is %f %f %f\n", transformation[0], transformation[1], transformation[2]);
 
     glBindTexture(GL_TEXTURE_2D, atlasTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
     if (pressedKeys['z']) {
         glBegin(GL_LINE_LOOP);
     } else {
