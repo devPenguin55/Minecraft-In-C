@@ -220,6 +220,7 @@ void drawGraphics()
                 xWidth = 1;
                 zLength = curQuad->height;
                 yHeight = curQuad->width;
+                translation[0] -= curQuad->height-1;
                 break;
             case FACE_FRONT:
                 xWidth = curQuad->width;
@@ -230,6 +231,7 @@ void drawGraphics()
                 xWidth = curQuad->width;
                 zLength = 1;
                 yHeight = curQuad->height;
+                translation[2] -= curQuad->width-1;
                 break;
         }
         GLfloat size[3] = {xWidth*BlockWidthX, yHeight*BlockHeightY, zLength*BlockLengthZ};

@@ -201,14 +201,14 @@ void generateChunkMesh(Chunk *chunk)
         }    
     }
 
-    int visitedBottoms[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0};
-    for (int y = 0; y < ChunkHeightY; y++) {
+    int visitedBottoms[ChunkWidthX][ChunkLengthZ][ChunkHeightY-1] = {0};
+    for (int y = 0; y < ChunkHeightY-1; y++) {
         for (int x = 0; x < ChunkWidthX; x++) {
             for (int z = 0; z < ChunkLengthZ; z++) {
-                if (bottoms[x][z][y] == 0 || visitedBottoms[x][z][y]) { continue; }
+                if (bottoms[x][z][y+1] == 0 || visitedBottoms[x][z][y+1]) { continue; }
                 
                 width = 1;
-                while (((x+width) < ChunkWidthX && bottoms[x+width][z][y] == 1) && !visitedBottoms[x+width][z][y]) {
+                while (((x+width) < ChunkWidthX && bottoms[x+width][z][y+1] == 1) && !visitedBottoms[x+width][z][y+1]) {
                     width++;
                 }
 
@@ -216,7 +216,7 @@ void generateChunkMesh(Chunk *chunk)
                 done   = 0;
                 while ((z+height) < ChunkLengthZ && !done) {
                     for (int dx = 0; dx < width; dx++) {
-                        if (bottoms[x+dx][z+height][y] == 0 || visitedBottoms[x+dx][z+height][y]) {
+                        if (bottoms[x+dx][z+height][y+1] == 0 || visitedBottoms[x+dx][z+height][y+1]) {
                             done = 1;
                             break;
                         }
@@ -229,7 +229,7 @@ void generateChunkMesh(Chunk *chunk)
 
                 for (int dz = 0; dz<ChunkLengthZ; dz++) {
                     for (int dx = 0; dx<ChunkWidthX; dx++) {
-                        visitedBottoms[x+dx][z+dz][y] = 1;
+                        visitedBottoms[x+dx][z+dz][y+1] = 1;
                     }
                 }
 
