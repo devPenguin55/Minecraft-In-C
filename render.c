@@ -96,8 +96,10 @@ void uvCoordinatesFromTextureIndex(int textureIndex, UV *uv, int amtHorizTexture
 void face(GLfloat A[], GLfloat B[], GLfloat C[], GLfloat D[], GLfloat transformation[3], int textureIndex, GLfloat size[3])
 {
     glPushMatrix();
+    // glScalef(size[0], size[1], size[2]);
     glTranslatef(transformation[0], transformation[1], transformation[2]); // move it up
-    glScalef(size[0], size[1], size[2]);
+    // glTranslatef(1, 1, 1); // move it up
+    // printf("Translation is %f %f %f\n", transformation[0], transformation[1], transformation[2]);
 
     glBindTexture(GL_TEXTURE_2D, atlasTexture);
     if (pressedKeys['z']) {
@@ -190,8 +192,11 @@ void drawGraphics()
         
 
             
-        GLfloat translation[3] = {curQuad->x, curQuad->y, curQuad->z};
-
+        GLfloat translation[3];
+        translation[0] = curQuad->x;
+        translation[1] = curQuad->y;
+        translation[2] = curQuad->z;
+        
         GLfloat xWidth;
         GLfloat zLength;
         GLfloat yHeight;

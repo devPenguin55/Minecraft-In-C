@@ -290,9 +290,10 @@ void generateChunkMesh(Chunk *chunk)
                 }
 
                 MeshQuad *curQuad = &(chunkMeshQuads.quads[chunkMeshQuads.amtQuads]);
-                curQuad->x = y;
-                curQuad->y = x;
+                curQuad->x = x;
+                curQuad->y = y;
                 curQuad->z = z;
+
                 curQuad->width = width;
                 curQuad->height = height;
                 curQuad->faceType = FACE_LEFT;
@@ -341,8 +342,8 @@ void generateChunkMesh(Chunk *chunk)
                 }
 
                 MeshQuad *curQuad = &(chunkMeshQuads.quads[chunkMeshQuads.amtQuads]);
-                curQuad->x = y;
-                curQuad->y = x;
+                curQuad->x = x;
+                curQuad->y = y;
                 curQuad->z = z;
                 curQuad->width = width;
                 curQuad->height = height;
@@ -393,8 +394,8 @@ void generateChunkMesh(Chunk *chunk)
 
                 MeshQuad *curQuad = &(chunkMeshQuads.quads[chunkMeshQuads.amtQuads]);
                 curQuad->x = x;
-                curQuad->y = z;
-                curQuad->z = y;
+                curQuad->y = y;
+                curQuad->z = z;
                 curQuad->width = width;
                 curQuad->height = height;
                 curQuad->faceType = FACE_FRONT;
@@ -444,8 +445,8 @@ void generateChunkMesh(Chunk *chunk)
 
                 MeshQuad *curQuad = &(chunkMeshQuads.quads[chunkMeshQuads.amtQuads]);
                 curQuad->x = x;
-                curQuad->y = z;
-                curQuad->z = y;
+                curQuad->y = y;
+                curQuad->z = z;
                 curQuad->width = width;
                 curQuad->height = height;
                 curQuad->faceType = FACE_BACK;
