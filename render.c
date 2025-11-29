@@ -98,7 +98,13 @@ void face(GLfloat A[], GLfloat B[], GLfloat C[], GLfloat D[], GLfloat transforma
     glPushMatrix();
 
     // glScalef(size[0], size[1], size[2]);
-    glTranslatef(transformation[0], transformation[1], transformation[2]); // move it up
+    // printf("%f %f %f\n", transformation[0], transformation[1], transformation[2]);
+    // glTranslatef(transformation[0], transformation[1], transformation[2]);
+    glTranslatef(
+        transformation[0]/ChunkWidthX/BlockWidthX, 
+        transformation[1]/ChunkHeightY/BlockHeightY, 
+        transformation[2]/ChunkLengthZ/BlockLengthZ
+    );
 
     glBindTexture(GL_TEXTURE_2D, atlasTexture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -117,19 +123,18 @@ void face(GLfloat A[], GLfloat B[], GLfloat C[], GLfloat D[], GLfloat transforma
     float du = uv.u1 - uv.u;
     float dv = uv.v1 - uv.v;
 
-    float repeatU = size[0];
-    float repeatV = size[1];
+    // float repeatX = size[0]/BlockWidthX;
+    // float repeatY = size[1]/BlockHeightY;
 
     float U0 = uv.u;
     float V0 = uv.v;
-    float U1 = uv.u + du * repeatU;
-    float V1 = uv.v + dv * repeatV;
-
-    glBegin(pressedKeys['z'] ? GL_LINE_LOOP : GL_QUADS);
-        glTexCoord2f(U0, V0); glVertex3fv(A);
-        glTexCoord2f(U1, V0); glVertex3fv(B);
-        glTexCoord2f(U1, V1); glVertex3fv(C);
-        glTexCoord2f(U0, V1); glVertex3fv(D);
+    float U1 = uv.u + du;
+    float V1 = uv.v + dv;
+    // printf("%f, %f, %f, %f\n", U0, V0, U1, V1);
+    glTexCoord2f(U0, V0); glVertex3fv(A);
+    glTexCoord2f(U1, V0); glVertex3fv(B);
+    glTexCoord2f(U1, V1); glVertex3fv(C);
+    glTexCoord2f(U0, V1); glVertex3fv(D);
     glEnd();
 
     glPopMatrix();
@@ -248,8 +253,7 @@ void drawGraphics()
                 translation[2] -= curQuad->width-1;
                 break;
         }
-        // GLfloat size[3] = {xWidth, yHeight, zLength};
-        
+
         float repeatU, repeatV;
 
         switch (curQuad->faceType) {

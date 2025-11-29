@@ -11,8 +11,8 @@ GLfloat PlayerDirY = -3;
 GLfloat PlayerDirZ = -1;
 float PLAYER_SPEED = 0.0005;
 
-float yaw   = 132.0f; // horizontal rotation
-float pitch = -56.0f; // vertical   rotation
+float yaw   = 0.0f; // horizontal rotation
+float pitch = 0.0f; // vertical   rotation
 
 int lastMouseX = 0;
 int lastMouseY = 0;

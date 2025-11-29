@@ -14,6 +14,8 @@ typedef struct Block
 typedef struct Chunk
 {
     Block blocks[16 * 16 * 64];
+    GLfloat chunkStartX;
+    GLfloat chunkStartZ;
 } Chunk;
 
 typedef struct PlayerChunks

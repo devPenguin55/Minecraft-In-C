@@ -15,6 +15,9 @@ float BlockLengthZ = 0.15;
 
 void createChunk(Chunk *chunk, GLfloat xAdd, GLfloat zAdd)
 {
+    chunk->chunkStartX = xAdd;
+    chunk->chunkStartZ = zAdd;
+    printf("new chunk made with %f and %f\n", xAdd, zAdd);
     for (int x = 0; x < ChunkWidthX; x++)
     {
         for (int z = 0; z < ChunkLengthZ; z++)
@@ -36,7 +39,7 @@ void initWorld(PlayerChunks *world)
 {
     int x = 0;
     int z = 0;
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 16; i++)
     {
         x = i % (4);
         z = (int)(i / (4));
@@ -57,6 +60,7 @@ void handleProgramClose() {
 
 void generateChunkMesh(Chunk *chunk)
 {
+    printf("mesh amts %d\n", chunkMeshQuads.amtQuads);
     int    tops[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0}; // * X-Z plane, y fixed
     int bottoms[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0}; // * X-Z plane, y fixed
     int  lefts[ChunkHeightY][ChunkLengthZ][ChunkWidthX]  = {0}; // ? Y-Z plane, x fixed
@@ -134,19 +138,18 @@ void generateChunkMesh(Chunk *chunk)
             }
         }
         
-        for (int i = 0; i < 16; i++)
-        {
-            for (int j = 0; j < 16; j++)
-            {
-                printf("%d ", tops[i][j][y]);
-            }
-            printf("\n");
-        }
-        printf(" ---  new y layer of %d\n", y); 
+        // for (int i = 0; i < 16; i++)
+        // {
+        //     for (int j = 0; j < 16; j++)
+        //     {
+        //         printf("%d ", tops[i][j][y]);
+        //     }
+        //     printf("\n");
+        // }
+        // printf(" ---  new y layer of %d\n", y); 
     }
 
     // greedy algorithm steps
-
     int visitedTops[ChunkWidthX][ChunkLengthZ][ChunkHeightY] = {0};
     int width;
     int height;
@@ -188,15 +191,16 @@ void generateChunkMesh(Chunk *chunk)
                 }
 
                 MeshQuad *curQuad = &(chunkMeshQuads.quads[chunkMeshQuads.amtQuads]);
-                curQuad->x = x;
+                curQuad->x = x+chunk->chunkStartX;
                 curQuad->y = y;
-                curQuad->z = z;
+                curQuad->z = z+chunk->chunkStartZ;
                 curQuad->width = width;
                 curQuad->height = height;
                 curQuad->faceType = FACE_TOP;
 
                 chunkMeshQuads.amtQuads++;
-                printf("[CREATED QUAD] x %d, y %d, z %d, width %d, height %d, faceType %d\n", x, y, z, width, height, curQuad->faceType);
+                printf("  -> %f, %f\n", x, chunk->chunkStartX);
+                printf("[CREATED QUAD] x %f, y %f, z %f, width %d, height %d, faceType %d\n", curQuad->x, curQuad->y, curQuad->z, width, height, curQuad->faceType);
             }        
         }    
     }
@@ -239,15 +243,15 @@ void generateChunkMesh(Chunk *chunk)
                 }
 
                 MeshQuad *curQuad = &(chunkMeshQuads.quads[chunkMeshQuads.amtQuads]);
-                curQuad->x = x;
+                curQuad->x = x+chunk->chunkStartX;
                 curQuad->y = y;
-                curQuad->z = z;
+                curQuad->z = z+chunk->chunkStartZ;
                 curQuad->width = width;
                 curQuad->height = height;
                 curQuad->faceType = FACE_BOTTOM;
 
                 chunkMeshQuads.amtQuads++;
-                printf("[CREATED QUAD] x %d, y %d, z %d, width %d, height %d, faceType %d\n", x, y, z, width, height, curQuad->faceType);
+                printf("[CREATED QUAD] x %f, y %f, z %f, width %d, height %d, faceType %d\n", curQuad->x, curQuad->y, curQuad->z, width, height, curQuad->faceType);
             }        
         }    
     }
@@ -290,16 +294,16 @@ void generateChunkMesh(Chunk *chunk)
                 }
 
                 MeshQuad *curQuad = &(chunkMeshQuads.quads[chunkMeshQuads.amtQuads]);
-                curQuad->x = x;
+                curQuad->x = x+chunk->chunkStartX;
                 curQuad->y = y;
-                curQuad->z = z;
+                curQuad->z = z+chunk->chunkStartZ;
 
                 curQuad->width = width;
                 curQuad->height = height;
                 curQuad->faceType = FACE_LEFT;
 
                 chunkMeshQuads.amtQuads++;
-                printf("[CREATED QUAD] x %d, y %d, z %d, width %d, height %d, faceType %d\n", x, y, z, width, height, curQuad->faceType);
+                printf("[CREATED QUAD] x %f, y %f, z %f, width %d, height %d, faceType %d\n", curQuad->x, curQuad->y, curQuad->z, width, height, curQuad->faceType);
             }        
         }    
     }
@@ -342,15 +346,15 @@ void generateChunkMesh(Chunk *chunk)
                 }
 
                 MeshQuad *curQuad = &(chunkMeshQuads.quads[chunkMeshQuads.amtQuads]);
-                curQuad->x = x;
+                curQuad->x = x+chunk->chunkStartX;
                 curQuad->y = y;
-                curQuad->z = z;
+                curQuad->z = z+chunk->chunkStartZ;
                 curQuad->width = width;
                 curQuad->height = height;
                 curQuad->faceType = FACE_RIGHT;
 
                 chunkMeshQuads.amtQuads++;
-                printf("[CREATED QUAD] x %d, y %d, z %d, width %d, height %d, faceType %d\n", x, y, z, width, height, curQuad->faceType);
+                printf("[CREATED QUAD] x %f, y %f, z %f, width %d, height %d, faceType %d\n", curQuad->x, curQuad->y, curQuad->z, width, height, curQuad->faceType);
             }        
         }    
     }
@@ -393,15 +397,15 @@ void generateChunkMesh(Chunk *chunk)
                 }
 
                 MeshQuad *curQuad = &(chunkMeshQuads.quads[chunkMeshQuads.amtQuads]);
-                curQuad->x = x;
+                curQuad->x = x+chunk->chunkStartX;
                 curQuad->y = y;
-                curQuad->z = z;
+                curQuad->z = z+chunk->chunkStartZ;
                 curQuad->width = width;
                 curQuad->height = height;
                 curQuad->faceType = FACE_FRONT;
 
                 chunkMeshQuads.amtQuads++;
-                printf("[CREATED QUAD] x %d, y %d, z %d, width %d, height %d, faceType %d\n", x, y, z, width, height, curQuad->faceType);
+                printf("[CREATED QUAD] x %f, y %f, z %f, width %d, height %d, faceType %d\n", curQuad->x, curQuad->y, curQuad->z, width, height, curQuad->faceType);
             }        
         }    
     }
@@ -444,15 +448,15 @@ void generateChunkMesh(Chunk *chunk)
                 }
 
                 MeshQuad *curQuad = &(chunkMeshQuads.quads[chunkMeshQuads.amtQuads]);
-                curQuad->x = x;
+                curQuad->x = x+chunk->chunkStartX;
                 curQuad->y = y;
-                curQuad->z = z;
+                curQuad->z = z+chunk->chunkStartZ;
                 curQuad->width = width;
                 curQuad->height = height;
                 curQuad->faceType = FACE_BACK;
 
                 chunkMeshQuads.amtQuads++;
-                printf("[CREATED QUAD] x %d, y %d, z %d, width %d, height %d, faceType %d\n", x, y, z, width, height, curQuad->faceType);
+                printf("[CREATED QUAD] x %f, y %f, z %f, width %d, height %d, faceType %d\n", curQuad->x, curQuad->y, curQuad->z, width, height, curQuad->faceType);
             }        
         }    
     }
